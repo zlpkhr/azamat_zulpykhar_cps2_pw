@@ -1,0 +1,69 @@
+Analysis of NimGame Implementation
+============================
+
+Question: How are players represented?
+------------------------------------
+Players are represented as Integer values 0 and 1 in the array:
+public final static Integer[] players = {0, 1};
+
+This is a simple binary representation where:
+- Player 0 is typically the first player (human in the gameplay)
+- Player 1 is the second player (machine in the gameplay)
+The representation is minimal and sufficient since there are only two players alternating turns.
+
+
+Question: What is a state of the game?
+------------------------------------
+A state is represented as a List<Integer> containing two elements:
+- Index 0: The current player's turn (0 or 1)
+- Index 1: The number of sticks remaining in the pool
+
+Example of initial state creation:
+initialState.add(0);    // First element: current player
+initialState.add(size); // Second element: number of remaining sticks
+
+This representation efficiently captures all necessary information:
+- Who's turn it is
+- How many sticks are left
+- Implicitly, what moves have been made (through the remaining sticks)
+
+
+Question: How are actions represented?
+------------------------------------
+Actions are represented as Integer values (1, 2, or 3) indicating how many sticks a player wants to remove.
+
+The available actions are constrained by:
+- Minimum: 1 stick
+- Maximum: min(3, remaining sticks)
+
+This is implemented in getActions():
+for (int i = 1; i <= Math.min(3, state.get(1)); i++)
+    actions.add(i);
+
+The representation is intuitive as it directly maps to the game rules where players must remove 1-3 sticks.
+
+
+Question: What is the meaning of the utility function?
+------------------------------------
+The utility function implements the game's winning strategy based on the modulo-4 pattern:
+
+1. Terminal states:
+   - If there's 1 stick left and it's your turn: Double.NEGATIVE_INFINITY (you'll lose)
+   - If there's 1 stick left and it's opponent's turn: Double.POSITIVE_INFINITY (you'll win)
+
+2. Non-terminal states (based on modulo-4 pattern):
+   - If (remaining sticks - 1) is divisible by 4:
+     * Your turn: -1 (bad position)
+     * Opponent's turn: 1 (good position)
+   - Otherwise:
+     * Your turn: 1 (good position)
+     * Opponent's turn: -1 (bad position)
+
+This utility function encodes the optimal strategy for Nim:
+- Try to leave your opponent with a number of sticks that is one more than a multiple of 4 (5, 9, 13, etc.)
+- The player who can force their opponent to take the last stick wins
+- The modulo-4 pattern ensures you can always force your opponent into taking the last stick if you play optimally
+
+The utility values (1, -1, ∞, -∞) create a clear gradient for the minimax algorithm to find the optimal path:
+- Infinite values for immediate win/loss states
+- ±1 for advantageous/disadvantageous positions 
