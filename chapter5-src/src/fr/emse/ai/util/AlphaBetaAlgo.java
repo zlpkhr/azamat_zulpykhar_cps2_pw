@@ -21,7 +21,7 @@ public class AlphaBetaAlgo {
      * @return The minimax value of the node
      */
     private int alphabeta(SimpleTwoPlyGameTree tree, int alpha, int beta) {
-        expandedNodes++;
+        expandedNodes += 2;  // Count both MAX and MIN expansions for this state
         
         if (tree.isLeaf()) {
             return tree.getValue();

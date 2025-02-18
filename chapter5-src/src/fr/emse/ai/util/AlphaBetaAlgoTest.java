@@ -37,6 +37,7 @@ public class AlphaBetaAlgoTest {
         System.out.println("Testing MiniMax algorithm:");
         int minimaxValue = MiniMaxAlgo.minimax(tree1);
         System.out.println("Minimax value of the tree: " + minimaxValue);
+        System.out.println("Number of nodes expanded: " + MiniMaxAlgo.getExpandedNodes());
         System.out.println("\nRoot node (MAX) value: " + tree1.getValue());
         System.out.println("\nMIN level values:");
         for (SimpleTwoPlyGameTree child : tree1.getChildren()) {
